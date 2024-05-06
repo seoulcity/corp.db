@@ -1,1 +1,1 @@
-tree -I 'node_modules'
+tree -I 'node_modules|LICENSE|*.sh|README.md|static|*.config.js|*.json'

@@ -1,4 +1,4 @@
-// src/routes/dashboard/+page.server.js
+// src/routes/dashboard/countries/+page.server.js
 import { supabase } from '$lib/supabaseClient';
 
 export async function load() {

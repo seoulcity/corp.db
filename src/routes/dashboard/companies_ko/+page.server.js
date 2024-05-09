@@ -13,16 +13,38 @@ export async function load({ params, fetch, url }) {
 
   const { data, error } = await query;
 
+  // 컬럼 리스트를 별도로 가져오기
+  const { data: columnData, error: columnError } = await supabase
+    .from('companies_ko')
+    .select('*')
+    .limit(1);
+
+  if (columnError) {
+    console.error('Error fetching column data from companies_ko table:', columnError);
+    return {
+      companies: [],
+      error: `관리자에게 문의하세요. 에러 내용: ${JSON.stringify(columnError)}`,
+      searchColumn,
+      searchQuery,
+      columns: [],
+    };
+  }
+
   if (error) {
     console.error('Error fetching data from companies_ko table:', error);
     return {
       companies: [],
-      error: 'Failed to fetch data from companies_ko table',
+      error: `관리자에게 문의하세요. 에러 내용: ${JSON.stringify(error)}`,
+      searchColumn,
+      searchQuery,
+      columns: columnData && columnData.length > 0 ? Object.keys(columnData[0]) : [],
     };
   }
 
   return {
     companies: data || [],
-    columns: data && data.length > 0 ? Object.keys(data[0]) : [],
+    columns: columnData && columnData.length > 0 ? Object.keys(columnData[0]) : [],
+    searchColumn,
+    searchQuery,
   };
 }

@@ -1,6 +1,7 @@
 <!-- src/routes/dashboard/companies_ko/+page.svelte -->
 <script>
   import Pagination from './Pagination.svelte';
+  import Search from './Search.svelte';
 
   export let data;
   let searchColumn = data.searchColumn || '';
@@ -18,54 +19,46 @@
     currentPage = page;
   }
 
-  async function search() {
-    try {
-      const url = new URL(window.location);
-      url.searchParams.set('searchColumn', searchColumn);
-      url.searchParams.set('searchQuery', searchQuery);
-      window.location = url;
-    } catch (error) {
-      console.error('Error occurred during search:', error);
-      searchError = true;
-    }
+  async function handleSearch(column, query) {
+    const url = new URL(window.location);
+    url.searchParams.set('searchColumn', column);
+    url.searchParams.set('searchQuery', query);
+    window.location = url;
   }
 </script>
 
-<div class="mb-4">
-<div class="flex items-center">
-  <select bind:value={searchColumn} class="mr-2">
-    <option value="" disabled selected>Select column</option>
-    {#each data.columns as column}
-      <option value={column}>{column}</option>
-    {/each}
-  </select>
-  <input type="text" bind:value={searchQuery} placeholder="Search..." class="mr-2" disabled={!searchColumn} on:keydown={(e) => {
-    if (e.key === 'Enter' && searchColumn) {
-      search();
-    }
-  }}>
-  <button on:click={search} class="px-4 py-2 rounded" class:bg-blue-500={searchColumn} class:text-white={searchColumn} class:bg-gray-300={!searchColumn} class:cursor-not-allowed={!searchColumn} disabled={!searchColumn}>Search</button>
-</div>
-{#if data.searchQuery && !searchError}
-  <p class="mt-2 text-sm text-gray-500">{data.searchQuery} 검색 결과</p>
-{:else if searchError}
-  <p class="mt-2 text-sm text-red-500">검색을 수행할 수 없습니다. 관리자에게 문의하세요.</p>
-{/if}
-</div>
+<Search {searchColumn} {searchQuery} columns={data.columns} onSearch={handleSearch} {searchError} />
 
 <h2 class="text-2xl font-bold mb-4">Companies (Korea)</h2>
 {#if data.error}
 <p class="text-red-500">{data.error}</p>
 {:else if Array.isArray(data.companies) && data.companies.length > 0}
-<ul>
-  {#each paginatedCompanies as company, index}
-    <li class="p-4" class:bg-gray-100={index % 2 === 0}>
-      <h3 class="text-lg font-bold">{company.corp_name}</h3>
-      <p>ID: {company.id}</p>
-      <!-- Display other relevant fields from the companies_ko table -->
-    </li>
-  {/each}
-</ul>
+<table class="w-full">
+  <thead>
+    <tr class="bg-gray-200">
+      <th class="py-2 px-4">ID</th>
+      <th class="py-2 px-4">Created At</th>
+      <th class="py-2 px-4">Corp Code</th>
+      <th class="py-2 px-4">Corp Name</th>
+      <th class="py-2 px-4">Stock Code</th>
+      <th class="py-2 px-4">DB Modified At</th>
+      <th class="py-2 px-4">Modify Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {#each paginatedCompanies as company, index}
+    <tr class:bg-gray-100={index % 2 === 0}>
+      <td class="py-2 px-4">{company.id}</td>
+      <td class="py-2 px-4">{company.created_at}</td>
+      <td class="py-2 px-4">{company.corp_code}</td>
+      <td class="py-2 px-4">{company.corp_name}</td>
+      <td class="py-2 px-4">{company.stock_code}</td>
+      <td class="py-2 px-4">{company.db_modified_at}</td>
+      <td class="py-2 px-4">{company.modify_date}</td>
+    </tr>
+    {/each}
+  </tbody>
+</table>
 <Pagination {currentPage} {totalPages} {maxVisiblePages} onPageChange={goToPage} />
 {:else}
 <p>No companies found. Please try a different search.</p>

@@ -26,10 +26,14 @@
     window.location = url;
   }
 </script>
+<h2 class="text-2xl font-bold mb-4">Companies (Korea)</h2>
 
 <Search {searchColumn} {searchQuery} columns={data.columns} onSearch={handleSearch} {searchError} />
 
-<h2 class="text-2xl font-bold mb-4">Companies (Korea)</h2>
+{#if searchQuery}
+  <p class="mt-2 text-sm text-gray-500">"{searchQuery}" 검색 결과:</p>
+{/if}
+
 {#if data.error}
 <p class="text-red-500">{data.error}</p>
 {:else if Array.isArray(data.companies) && data.companies.length > 0}

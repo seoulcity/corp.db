@@ -9,6 +9,7 @@ export async function load({ cookies }) {
     throw redirect(302, '/');
   }
 
+  const { data } = await supabase.from('countries').select();
   return {
     session,
   };

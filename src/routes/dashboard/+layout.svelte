@@ -34,7 +34,7 @@
 			</li>
 			<!-- Add more navigation items as needed -->
 		</ul>
-		<button on:click={signOut}>Sign Out</button>
+		<button on:click={signOut} class='text-red-500'>Sign Out</button>
 	</nav>
 
 	<main class="flex-1 p-4">

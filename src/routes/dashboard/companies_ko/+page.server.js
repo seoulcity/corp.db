@@ -22,7 +22,7 @@ export async function load({ params, fetch, url }) {
   }
 
   return {
-    companies: data || [], // 데이터가 없는 경우 빈 배열 반환
-    columns: Object.keys(data[0] || {}),
+    companies: data || [],
+    columns: data && data.length > 0 ? Object.keys(data[0]) : [],
   };
 }

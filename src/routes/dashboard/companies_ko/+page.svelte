@@ -3,7 +3,7 @@
   import Pagination from './Pagination.svelte';
 
   export let data;
-  let searchColumn = '';
+  let searchColumn = data.columns[0] || '';
   let searchQuery = '';
 
   let currentPage = 1;
@@ -32,7 +32,11 @@
       <option value={column}>{column}</option>
     {/each}
   </select>
-  <input type="text" bind:value={searchQuery} placeholder="Search..." class="mr-2">
+  <input type="text" bind:value={searchQuery} placeholder="Search..." class="mr-2" on:keydown={(e) => {
+    if (e.key === 'Enter') {
+      search();
+    }
+  }}>
   <button on:click={search} class="bg-blue-500 text-white px-4 py-2 rounded">Search</button>
 </div>
 </div>
@@ -40,7 +44,7 @@
 <h2 class="text-2xl font-bold mb-4">Companies (Korea)</h2>
 {#if data.error}
 <p class="text-red-500">{data.error}</p>
-{:else if Array.isArray(data.companies)}
+{:else if Array.isArray(data.companies) && data.companies.length > 0}
 <ul>
   {#each paginatedCompanies as company, index}
     <li class="p-4" class:bg-gray-100={index % 2 === 0}>
@@ -52,5 +56,5 @@
 </ul>
 <Pagination {currentPage} {totalPages} {maxVisiblePages} onPageChange={goToPage} />
 {:else}
-<p>No companies found.</p>
+<p>No companies found. Please try a different search.</p>
 {/if}

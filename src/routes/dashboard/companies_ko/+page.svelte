@@ -25,7 +25,14 @@
     url.searchParams.set('searchQuery', query);
     window.location = url;
   }
+
+  let expandedCompany = null;
+
+  function toggleDetails(company) {
+    expandedCompany = expandedCompany === company ? null : company;
+  }
 </script>
+
 <h2 class="text-2xl font-bold mb-4">Companies (Korea)</h2>
 
 <Search {searchColumn} {searchQuery} columns={data.columns} onSearch={handleSearch} {searchError} />
@@ -40,6 +47,7 @@
 <table class="w-full">
   <thead>
     <tr class="bg-gray-200">
+      <th class="py-2 px-4"></th>
       <th class="py-2 px-4">ID</th>
       <th class="py-2 px-4">Created At</th>
       <th class="py-2 px-4">Corp Code</th>
@@ -51,7 +59,8 @@
   </thead>
   <tbody>
     {#each paginatedCompanies as company, index}
-    <tr class:bg-gray-100={index % 2 === 0}>
+    <tr class:bg-gray-100={index % 2 === 0} on:click={() => toggleDetails(company)} class="cursor-pointer">
+      <td class="py-2 px-4">{expandedCompany === company ? '▼' : '▶'}</td>
       <td class="py-2 px-4">{company.id}</td>
       <td class="py-2 px-4">{company.created_at}</td>
       <td class="py-2 px-4">{company.corp_code}</td>
@@ -60,6 +69,14 @@
       <td class="py-2 px-4">{company.db_modified_at}</td>
       <td class="py-2 px-4">{company.modify_date}</td>
     </tr>
+    {#if expandedCompany === company}
+    <tr>
+      <td colspan="8" class="py-4 px-4">
+        <h2 class="text-xl font-bold mb-2">Contents</h2>
+        <!-- 여기에 세부 내용을 추가하세요 -->
+      </td>
+    </tr>
+    {/if}
     {/each}
   </tbody>
 </table>

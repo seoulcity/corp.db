@@ -1,5 +1,6 @@
 // src/routes/dashboard/companies_ko/+page.server.js
 import { supabase } from '$lib/supabaseClient';
+import { json } from '@sveltejs/kit';
 
 export async function load({ params, fetch, url }) {
   const searchColumn = url.searchParams.get('searchColumn');
